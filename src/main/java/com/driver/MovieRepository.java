@@ -60,17 +60,19 @@ public class MovieRepository {
         }
     }
     public void deleteAllDirectors(){
-        for(Map.Entry<String,Director> dirEntry: directorMap.entrySet()){
-            String name = dirEntry.getKey();
-            directorMap.remove(name);
-            for(Map.Entry<Movie,Director> e:movieToDirector.entrySet()){
-                String dir = e.getValue().getName();
-                if(dir.equals(name)){
-                    if(e.getKey()!=null) {
-                        String mName = e.getKey().getName();
-                        movieMap.remove(mName);
-                        movieToDirector.remove(e.getKey());
-                    }
+        List<String> nameOfDirs= new ArrayList<>();
+        for(Map.Entry<String,Director>dirEntry:directorMap.entrySet()){
+            nameOfDirs.add(dirEntry.getKey());
+        }
+        directorMap.clear();
+        for(int j=0;j<nameOfDirs.size();j++){
+           List<String> movies = getMoviesByDirectorName(nameOfDirs.get(j));
+            for(int i=0;i<movies.size();i++){
+                String mov = movies.get(i);
+                Movie m = movieMap.get(mov);
+                movieMap.remove(mov);
+                if(movieToDirector.get(m)!=null){
+                    movieToDirector.remove(m);
                 }
             }
         }
